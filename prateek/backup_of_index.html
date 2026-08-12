@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en" style="--accent-color: #B98D6F;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Family Memory Scrapbook</title>
+  <style>
+    /* Base Color Variables & Aesthetics */
+    :root {
+      --bg-color: #FAF9F6; /* Soft elegant cream */
+      --text-main: #2C3E50; /* Dark slate */
+      --text-muted: #7F8C8D;
+      --accent-color: #C5A880; /* Muted gold/sand */
+      --card-bg: #FFFFFF;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      transition: background-color 0.3s ease;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Header & Eyebrow Styles */
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .eyebrow {
+      text-align: center;
+      font-size: 0.72rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin: 0 0 22px 0;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-weight: 400;
+      margin: 0 0 6px 0;
+      font-size: 2rem;
+      color: var(--text-main);
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-top: 0;
+      margin-bottom: 30px;
+    }
+
+    h2.section-heading {
+      text-align: center;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin: 40px 0 30px 0;
+      font-size: 1.2rem;
+      border-bottom: 1px solid #EAEAEA;
+      padding-bottom: 10px;
+    }
+
+    /* Family Timeline Navigation — Scrapbook Stamps */
+    .nav-stamps {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin: 0 0 45px 0;
+      padding-top: 12px;
+    }
+
+    .stamp-btn {
+      position: relative;
+      background: var(--card-bg);
+      border: 3px dashed #D8CFC0;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 16px 12px 12px;
+      flex: 0 1 120px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Washi Tape Effect */
+    .stamp-btn::before {
+      content: '';
+      position: absolute;
+      top: -9px;
+      left: 50%;
+      width: 36px;
+      height: 15px;
+      background: rgba(197, 168, 128, 0.4);
+      transform: translateX(-50%) rotate(-6deg);
+      border-radius: 2px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Playful Rotation Angles for Stamps */
+    .stamp-btn:nth-child(1) { transform: rotate(-4deg); }
+    .stamp-btn:nth-child(2) { transform: rotate(3deg); }
+    .stamp-btn:nth-child(3) { transform: rotate(-3deg); }
+    .stamp-btn:nth-child(4) { transform: rotate(2deg); }
+    .stamp-btn:nth-child(5) { transform: rotate(-2deg); }
+
+    .stamp-btn:hover {
+      transform: translateY(-2px) rotate(0deg);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+    }
+
+    .stamp-btn.active {
+      transform: rotate(0deg) translateY(-5px) scale(1.05) !important;
+      border-color: var(--accent-color);
+      border-style: solid;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.10);
+      opacity: 1 !important;
+      z-index: 2;
+    }
+
+    .stamp-icon {
+      font-size: 1.5rem;
+      line-height: 1;
+      display: block;
+    }
+
+    .stamp-year {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 0.82rem;
+      color: #B7BEC2;
+      transition: color 0.3s ease;
+      display: block;
+    }
+
+    .stamp-btn.active .stamp-year {
+      color: var(--accent-color);
+      font-weight: 600;
+    }
+
+    .stamp-desc {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.25;
+      transition: color 0.3s ease;
+      display: block;
+    }
+
+    .stamp-btn.active .stamp-desc {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    /* Page Phase Animations */
+    .phase {
+      display: none;
+    }
+
+    .phase.active {
+      display: block;
+      animation: fadeIn 0.45s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .phase.active { animation: none; }
+    }
+
+    /* Featured Content Cards */
+    .featured-card {
+      background-color: var(--card-bg);
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+      border: 1px solid #F0F0F0;
+      margin-bottom: 20px;
+    }
+
+    .featured-card h2, .featured-card h3 {
+      margin: 0 0 10px 0;
+      font-weight: 500;
+      font-size: 1.2rem;
+      color: var(--text-main);
+    }
+
+    .featured-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: -5px;
+      margin-bottom: 18px;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      display: inline-block;
+      background-color: var(--accent-color);
+      color: #FFFFFF;
+      padding: 12px 28px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      display: inline-block;
+      background-color: transparent;
+      color: var(--text-muted);
+      padding: 10px 22px;
+      border-radius: 25px;
+      border: 1px solid #D8CFC0;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: #F0F0F0;
+      color: var(--text-main);
+    }
+
+    .btn-success {
+      background-color: #27AE60;
+      color: #FFFFFF;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .btn-success:hover { opacity: 0.9; }
+
+    .btn-export {
+      background-color: #2980B9;
+      color: #FFFFFF;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.2s ease;
+    }
+
+    .btn-export:hover { opacity: 0.9; }
+
+    .btn-danger {
+      background-color: #E74C3C;
+      color: #FFFFFF;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 25px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .btn-danger:hover { opacity: 0.9; }
+
+    /* Timeline Section */
+    .timeline {
+      border-left: 2px solid #EAEAEA;
+      padding-left: 30px;
+      margin-left: 15px;
+      margin-top: 25px;
+    }
+
+    .event {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .event::before {
+      content: '';
+      position: absolute;
+      left: -37px;
+      top: 15px;
+      width: 12px;
+      height: 12px;
+      background-color: var(--accent-color);
+      border-radius: 50%;
+      border: 4px solid var(--bg-color);
+      box-sizing: content-box;
+      transition: background-color 0.3s ease;
+    }
+
+    .album-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--card-bg);
+      padding: 12px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text-main);
+      border: 1px solid #F0F0F0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      font-weight: 500;
+    }
+
+    .album-link:hover, .album-link:active {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .album-link-action {
+      color: var(--accent-color);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    /* Form Panels, Login & Admin Toolbar */
+    .form-panel, .login-panel {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 25px;
+      border: 1px solid #EAEAEA;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      margin-top: 25px;
+    }
+
+    .login-panel {
+      max-width: 400px;
+      margin: 25px auto 0;
+      text-align: center;
+    }
+
+    .admin-bar {
+      background: #F4F6F7;
+      border: 1px solid #E5E8E8;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #D8CFC0;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: #FAFAFA;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .form-input:focus {
+      outline: 2px solid var(--accent-color);
+      background: #FFFFFF;
+      border-color: transparent;
+    }
+
+    .color-picker-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .color-picker-input {
+      width: 45px;
+      height: 40px;
+      padding: 2px;
+      border: 1px solid #D8CFC0;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #FAFAFA;
+    }
+
+    .preset-swatches {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .color-swatch {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 0 0 1px #D8CFC0;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .color-swatch:hover { transform: scale(1.15); }
+
+    .editor-item-box {
+      background: #FAF9F6;
+      border: 1px solid #EAEAEA;
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .btn-delete {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #FFEBEE;
+      color: #C62828;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .btn-add-item {
+      background: #F0F0F0;
+      color: var(--text-main);
+      border: 1px dashed #B0B0B0;
+      border-radius: 8px;
+      width: 100%;
+      padding: 10px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 15px;
+      transition: background 0.2s ease;
+    }
+
+    .btn-add-item:hover { background: #E8E8E8; }
+
+    .error-msg {
+      color: #C62828;
+      font-size: 0.82rem;
+      margin-top: 6px;
+      display: none;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid #EAEAEA;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive Mobile Formatting */
+    @media (max-width: 420px) {
+      body { padding: 25px 15px; }
+      .stamp-btn { flex: 0 1 96px; padding: 12px 8px 10px; }
+      .stamp-desc { font-size: 0.68rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="eyebrow">Our Family Timeline</div>
+      <nav aria-label="Family timeline phases">
+        <div class="nav-stamps" id="stamps-nav-container">
+          <!-- Permanent Wedding Tab -->
+          <button type="button" class="stamp-btn" data-phase="wedding" data-color="#C5A880">
+            <span class="stamp-icon">💍</span>
+            <span class="stamp-year">2023</span>
+            <span class="stamp-desc">Wedding</span>
+          </button>
+
+          <!-- Permanent Birthday Tab -->
+          <button type="button" class="stamp-btn" data-phase="birthday" data-color="#3E7C91">
+            <span class="stamp-icon">🎂</span>
+            <span class="stamp-year">2026</span>
+            <span class="stamp-desc">Satvik's 1st Birthday</span>
+          </button>
+
+          <!-- Dynamic Custom Tabs Container -->
+          <div id="dynamic-stamps-wrapper" style="display: contents;"></div>
+
+          <!-- Permanent Next Up / Coming Soon Tab -->
+          <button type="button" class="stamp-btn active" data-phase="soon" id="soon-tab-btn" data-color="#B98D6F">
+            <span class="stamp-icon" id="display-stamp-icon">📌</span>
+            <span class="stamp-year" id="display-stamp-year">Next Up</span>
+            <span class="stamp-desc" id="display-stamp-desc">Coming Soon</span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main-content-container">
+      <!-- Fixed Phase 1: Wedding -->
+      <section id="phase-wedding" class="phase">
+        <h1>Prateek's Wedding</h1>
+        <p class="subtitle">Grateful for these family highlights! ✨ Relive the love.</p>
+        <div class="featured-card">
+          <h2>Family Highlights ✨</h2>
+          <p>Memories captured throughout the grand event</p>
+          <a href="https://photos.app.goo.gl/ojq69Bw3Cnpxdkjg8" target="_blank" rel="noopener" class="btn-primary">View Highlights</a>
+        </div>
+        <div class="featured-card">
+          <h2>Sangeet, Haldi, &amp; Wedding Videos 🎬</h2>
+          <p>The complete cinematic collection</p>
+          <a href="https://photos.app.goo.gl/Bqp8tMRMVxi5NUzr5" target="_blank" rel="noopener" class="btn-primary">Watch Videos</a>
+        </div>
+        <h2 class="section-heading">Event Timeline</h2>
+        <div class="timeline">
+          <div class="event"><a href="https://photos.app.goo.gl/3b8WZDBsAbMZhGyM6" target="_blank" class="album-link"><span>Mehndi 🌿</span><span class="album-link-action">Open Album</span></a></div>
+          <div class="event"><a href="https://photos.app.goo.gl/AmNoTDMTrvie1nB1A" target="_blank" class="album-link"><span>Haldi 💛</span><span class="album-link-action">Open Album</span></a></div>
+          <div class="event"><a href="https://photos.app.goo.gl/KGq1XNsEz2i3e9HW9" target="_blank" class="album-link"><span>Sangeet 🪈</span><span class="album-link-action">Open Album</span></a></div>
+          <div class="event"><a href="https://photos.app.goo.gl/fPyjzYAWEAirxG2j8" target="_blank" class="album-link"><span>Wedding 👰🤵</span><span class="album-link-action">Open Album</span></a></div>
+          <div class="event"><a href="https://photos.app.goo.gl/ebKgTDUmkVFhZhtK9" target="_blank" class="album-link"><span>Reception 💃🕺</span><span class="album-link-action">Open Album</span></a></div>
+        </div>
+      </section>
+
+      <!-- Fixed Phase 2: Birthday -->
+      <section id="phase-birthday" class="phase">
+        <h1>Satvik's First Birthday</h1>
+        <p class="subtitle">One year of little giggles &amp; big love 🎈</p>
+        <div class="featured-card">
+          <h2>Birthday Photos &amp; Video 🎂</h2>
+          <p>Relive every candle, cake smash &amp; giggle</p>
+          <a href="https://photos.app.goo.gl/SJCS4D3gQS1LqqxH7" target="_blank" rel="noopener" class="btn-primary">View Memories</a>
+        </div>
+      </section>
+
+      <!-- Dynamic Custom Published Phases Container -->
+      <div id="dynamic-phases-wrapper"></div>
+
+      <!-- Permanent Phase 3: Next Up / Coming Soon -->
+      <section id="phase-soon" class="phase active">
+        <h1 id="view-soon-title">What's Next</h1>
+        <p class="subtitle" id="view-soon-subtitle">More pages coming to the scrapbook 📖</p>
+
+        <div id="soon-cards-output">
+          <div class="featured-card">
+            <h2>A new page is waiting 📌</h2>
+            <p>Every new celebration gets pinned right here. You can add brand new pages using the editor below!</p>
+          </div>
+        </div>
+        <div id="soon-timeline-wrapper" style="display: none;">
+          <h2 class="section-heading">Event Timeline</h2>
+          <div class="timeline" id="soon-timeline-output"></div>
+        </div>
+
+        <!-- Open Editor Trigger -->
+        <div style="text-align: center; margin-top: 30px;">
+          <button id="btn-toggle-editor" class="btn-secondary" style="display: inline-block;">🔐 Edit Scrapbook / Add New Page</button>
+        </div>
+
+        <!-- Login Form Panel (Password Protection) -->
+        <div id="login-modal-panel" class="login-panel" style="display: none;">
+          <h3 style="margin-top: 0; margin-bottom: 6px;">🔐 Admin Authorization</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 18px;">Enter password to edit memories or download updated site.</p>
+          <div class="form-group">
+            <label for="input-login-pass">Password</label>
+            <input type="password" id="input-login-pass" class="form-input" placeholder="Enter password (Default: 1234)">
+            <div id="login-error-msg" class="error-msg" style="display: none;">Incorrect password. Please try again.</div>
+          </div>
+          <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+            <button id="btn-submit-login" class="btn-primary">Unlock Editor</button>
+            <button id="btn-cancel-login" class="btn-secondary">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Protected Editor Container (ONLY visible after authentication) -->
+        <div id="protected-editor-container" style="display: none;">
+          
+          <!-- Admin Action Bar -->
+          <div class="admin-bar">
+            <div>
+              <span style="font-weight: 600; font-size: 0.9rem;">🔐 Admin Session Active</span>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <!-- DOWNLOAD UPDATED HTML FILE BUTTON -->
+              <button id="btn-download-html" class="btn-export">📥 Download Updated HTML File</button>
+              <button id="btn-logout-admin" class="btn-danger">Logout</button>
+            </div>
+          </div>
+
+          <!-- Visual Editor Panel -->
+          <div id="visual-form-panel" class="form-panel">
+            <h3 style="margin-top:0; border-bottom:1px solid #EAEAEA; padding-bottom:8px;">1. Tab Stamp Settings</h3>
+            <div style="display: flex; gap: 10px;">
+              <div class="form-group" style="width: 30%;">
+                <label for="input-stamp-icon">Emoji Icon</label>
+                <input type="text" id="input-stamp-icon" class="form-input" placeholder="📌">
+              </div>
+              <div class="form-group" style="width: 70%;">
+                <label for="input-stamp-year">Stamp Header / Year</label>
+                <input type="text" id="input-stamp-year" class="form-input" placeholder="e.g. 2027 or Next Up">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="input-stamp-desc">Stamp Subtext</label>
+              <input type="text" id="input-stamp-desc" class="form-input" placeholder="e.g. Baby Shower / Reunion">
+            </div>
+
+            <div class="form-group">
+              <label>Theme Accent Color</label>
+              <div class="color-picker-row">
+                <input type="color" id="input-accent-color" class="color-picker-input" value="#B98D6F">
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Presets:</span>
+                <div class="preset-swatches">
+                  <div class="color-swatch" style="background: #B98D6F;" onclick="setPresetColor('#B98D6F')"></div>
+                  <div class="color-swatch" style="background: #27AE60;" onclick="setPresetColor('#27AE60')"></div>
+                  <div class="color-swatch" style="background: #8E44AD;" onclick="setPresetColor('#8E44AD')"></div>
+                  <div class="color-swatch" style="background: #E67E22;" onclick="setPresetColor('#E67E22')"></div>
+                  <div class="color-swatch" style="background: #D81B60;" onclick="setPresetColor('#D81B60')"></div>
+                </div>
+              </div>
+            </div>
+
+            <h3 style="margin:24px 0 12px 0; border-bottom:1px solid #EAEAEA; padding-bottom:8px;">2. Page Content</h3>
+
+            <div class="form-group">
+              <label for="input-page-title">Page Main Title</label>
+              <input type="text" id="input-page-title" class="form-input" placeholder="e.g. Grand Family Reunion">
+            </div>
+
+            <div class="form-group">
+              <label for="input-page-subtitle">Page Subtitle</label>
+              <input type="text" id="input-page-subtitle" class="form-input" placeholder="e.g. Summer 2027 Celebration">
+            </div>
+
+            <hr style="border:0; border-top:1px dashed #EAEAEA; margin: 20px 0;">
+
+            <h4 style="margin: 0 0 10px 0;">Featured Cards</h4>
+            <div id="editor-cards-list">
+              <div class="editor-item-box card-item">
+                <button type="button" class="btn-delete" onclick="this.parentElement.remove()">Remove</button>
+                <div class="form-group" style="margin-top: 10px;">
+                  <label>Card Title</label>
+                  <input type="text" class="form-input card-title" value="A new page is waiting 📌" placeholder="e.g. Memory Photos">
+                </div>
+                <div class="form-group">
+                  <label>Subtext (optional)</label>
+                  <input type="text" class="form-input card-subtext" value="Every new celebration gets pinned right here. You can add brand new pages using the editor below!" placeholder="e.g. Relive the happy moments">
+                </div>
+                <div class="form-group">
+                  <label>Button Label (optional)</label>
+                  <input type="text" class="form-input card-btn-text" value="" placeholder="e.g. View Album">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label>Link URL (optional)</label>
+                  <input type="url" class="form-input card-btn-link" value="" placeholder="https://photos.app.goo.gl/...">
+                </div>
+              </div>
+            </div>
+            <button type="button" id="btn-add-card-field" class="btn-add-item">+ Add Featured Card</button>
+
+            <hr style="border:0; border-top:1px dashed #EAEAEA; margin: 20px 0;">
+
+            <h4 style="margin: 0 0 10px 0;">Timeline Album Links</h4>
+            <div id="editor-timeline-list"></div>
+            <button type="button" id="btn-add-timeline-field" class="btn-add-item">+ Add Timeline Link</button>
+
+            <div style="display: flex; gap: 10px; margin-top: 25px; flex-wrap: wrap;">
+              <button id="btn-save-draft" class="btn-primary">Save Draft to 'Next Up'</button>
+              <button id="btn-publish-page" class="btn-success">🚀 Publish as New Timeline Tab</button>
+              <button id="btn-close-editor" class="btn-secondary">Hide Editor</button>
+            </div>
+
+            <!-- Password Change Section -->
+            <div style="margin-top: 30px; border-top: 1px dashed #D8CFC0; padding-top: 15px; text-align: left;">
+              <h4 style="margin: 0 0 10px 0;">🔑 Change Admin Password</h4>
+              <div style="display: flex; gap: 10px; align-items: flex-end;">
+                <div class="form-group" style="margin-bottom:0; flex-grow: 1;">
+                  <input type="password" id="input-new-pass" class="form-input" placeholder="New Password">
+                </div>
+                <button id="btn-change-pass" class="btn-secondary">Update Password</button>
+              </div>
+              <div id="pass-change-msg" style="font-size: 0.8rem; color: #27AE60; margin-top: 4px; display: none;">Password updated successfully!</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Made with ❤️ to preserve memories forever</p>
+    </footer>
+  </div>
+
+  <script id="app-state-script">
+    // Embedded App Data
+    window.INITIAL_APP_DATA = {
+      "adminPassword": "25322",
+      "soonData": {
+        "stampIcon": "📌",
+        "stampYear": "Next Up",
+        "stampDesc": "Coming Soon",
+        "accentColor": "#B98D6F",
+        "title": "What's Next",
+        "subtitle": "More pages coming to the scrapbook 📖",
+        "cards": [
+          {
+            "title": "A new page is waiting 📌",
+            "subtext": "Every new celebration gets pinned right here. You can add brand new pages using the editor below!",
+            "btnText": "",
+            "btnLink": ""
+          }
+        ],
+        "timeline": []
+      },
+      "customPages": []
+    };
+
+    function setPresetColor(hex) {
+      document.getElementById('input-accent-color').value = hex;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      let appData = JSON.parse(localStorage.getItem('scrapbook-full-data')) || window.INITIAL_APP_DATA;
+
+      if (!appData.adminPassword) {
+        appData.adminPassword = "1234";
+      }
+
+      let isAuthenticated = false;
+
+      const dynamicStampsWrapper = document.getElementById('dynamic-stamps-wrapper');
+      const dynamicPhasesWrapper = document.getElementById('dynamic-phases-wrapper');
+
+      // Elements for 'Soon' display
+      const stampIconEl = document.getElementById('display-stamp-icon');
+      const stampYearEl = document.getElementById('display-stamp-year');
+      const stampDescEl = document.getElementById('display-stamp-desc');
+      const titleEl = document.getElementById('view-soon-title');
+      const subtitleEl = document.getElementById('view-soon-subtitle');
+      const cardsOutput = document.getElementById('soon-cards-output');
+      const timelineWrapper = document.getElementById('soon-timeline-wrapper');
+      const timelineOutput = document.getElementById('soon-timeline-output');
+
+      // Authentication Elements
+      const toggleBtn = document.getElementById('btn-toggle-editor');
+      const loginModalPanel = document.getElementById('login-modal-panel');
+      const protectedEditorContainer = document.getElementById('protected-editor-container');
+      const inputLoginPass = document.getElementById('input-login-pass');
+      const loginErrorMsg = document.getElementById('login-error-msg');
+      const btnSubmitLogin = document.getElementById('btn-submit-login');
+      const btnCancelLogin = document.getElementById('btn-cancel-login');
+      const btnLogoutAdmin = document.getElementById('btn-logout-admin');
+      const btnDownloadHtml = document.getElementById('btn-download-html');
+
+      // Editor Form Elements
+      const inputStampIcon = document.getElementById('input-stamp-icon');
+      const inputStampYear = document.getElementById('input-stamp-year');
+      const inputStampDesc = document.getElementById('input-stamp-desc');
+      const inputAccentColor = document.getElementById('input-accent-color');
+      const inputTitle = document.getElementById('input-page-title');
+      const inputSubtitle = document.getElementById('input-page-subtitle');
+      const editorCardsList = document.getElementById('editor-cards-list');
+      const editorTimelineList = document.getElementById('editor-timeline-list');
+
+      function saveStorage() {
+        localStorage.setItem('scrapbook-full-data', JSON.stringify(appData));
+      }
+
+      function switchTab(phaseId, themeColor) {
+        document.querySelectorAll('.stamp-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.phase').forEach(phase => phase.classList.remove('active'));
+
+        const targetBtn = document.querySelector(`.stamp-btn[data-phase="${phaseId}"]`);
+        const targetPhase = document.getElementById(`phase-${phaseId}`);
+
+        if (targetBtn) targetBtn.classList.add('active');
+        if (targetPhase) targetPhase.classList.add('active');
+
+        document.documentElement.style.setProperty('--accent-color', themeColor || '#C5A880');
+      }
+
+      function attachNavListeners() {
+        document.querySelectorAll('.stamp-btn').forEach(btn => {
+          btn.onclick = () => {
+            const phase = btn.dataset.phase;
+            const color = btn.dataset.color || '#C5A880';
+            switchTab(phase, color);
+          };
+        });
+      }
+
+      function renderApp() {
+        // Render Dynamic Custom Pages in Navigation & Content Area
+        dynamicStampsWrapper.innerHTML = '';
+        dynamicPhasesWrapper.innerHTML = '';
+
+        appData.customPages.forEach((page) => {
+          const stampBtn = document.createElement('button');
+          stampBtn.type = 'button';
+          stampBtn.className = 'stamp-btn';
+          stampBtn.dataset.phase = page.id;
+          stampBtn.dataset.color = page.accentColor;
+          stampBtn.innerHTML = `
+            <span class="stamp-icon">${page.stampIcon || '⭐'}</span>
+            <span class="stamp-year">${page.stampYear}</span>
+            <span class="stamp-desc">${page.stampDesc}</span>
+          `;
+          dynamicStampsWrapper.appendChild(stampBtn);
+
+          const phaseSec = document.createElement('section');
+          phaseSec.id = `phase-${page.id}`;
+          phaseSec.className = 'phase';
+
+          let cardsHTML = '';
+          page.cards.forEach(c => {
+            cardsHTML += `
+              <div class="featured-card">
+                <h2>${c.title}</h2>
+                ${c.subtext ? `<p>${c.subtext}</p>` : ''}
+                ${c.btnText && c.btnLink ? `<a href="${c.btnLink}" target="_blank" rel="noopener" class="btn-primary">${c.btnText}</a>` : ''}
+              </div>
+            `;
+          });
+
+          let timelineHTML = '';
+          if (page.timeline && page.timeline.length > 0) {
+            let linksHTML = '';
+            page.timeline.forEach(t => {
+              linksHTML += `
+                <div class="event">
+                  <a href="${t.link}" target="_blank" rel="noopener" class="album-link">
+                    <span>${t.name}</span>
+                    <span class="album-link-action">Open Album</span>
+                  </a>
+                </div>
+              `;
+            });
+            timelineHTML = `<h2 class="section-heading">Event Timeline</h2><div class="timeline">${linksHTML}</div>`;
+          }
+
+          phaseSec.innerHTML = `
+            <h1>${page.title}</h1>
+            <p class="subtitle">${page.subtitle}</p>
+            ${cardsHTML}
+            ${timelineHTML}
+          `;
+          dynamicPhasesWrapper.appendChild(phaseSec);
+        });
+
+        // Render Coming Soon Section
+        const soon = appData.soonData;
+        stampIconEl.textContent = soon.stampIcon || "📌";
+        stampYearEl.textContent = soon.stampYear || "Next Up";
+        stampDescEl.textContent = soon.stampDesc || "Coming Soon";
+        document.getElementById('soon-tab-btn').dataset.color = soon.accentColor || "#B98D6F";
+
+        titleEl.textContent = soon.title;
+        subtitleEl.textContent = soon.subtitle;
+
+        cardsOutput.innerHTML = '';
+        soon.cards.forEach(card => {
+          const cardDiv = document.createElement('div');
+          cardDiv.className = 'featured-card';
+          cardDiv.innerHTML = `
+            <h2>${card.title}</h2>
+            ${card.subtext ? `<p>${card.subtext}</p>` : ''}
+            ${card.btnText && card.btnLink ? `<a href="${card.btnLink}" target="_blank" rel="noopener" class="btn-primary">${card.btnText}</a>` : ''}
+          `;
+          cardsOutput.appendChild(cardDiv);
+        });
+
+        timelineOutput.innerHTML = '';
+        if (soon.timeline && soon.timeline.length > 0) {
+          timelineWrapper.style.display = 'block';
+          soon.timeline.forEach(item => {
+            const eventDiv = document.createElement('div');
+            eventDiv.className = 'event';
+            eventDiv.innerHTML = `
+              <a href="${item.link}" target="_blank" rel="noopener" class="album-link">
+                <span>${item.name}</span>
+                <span class="album-link-action">Open Album</span>
+              </a>
+            `;
+            timelineOutput.appendChild(eventDiv);
+          });
+        } else {
+          timelineWrapper.style.display = 'none';
+        }
+
+        attachNavListeners();
+      }
+
+      // Authentication Logic
+      toggleBtn.onclick = () => {
+        if (isAuthenticated) {
+          protectedEditorContainer.style.display = 'block';
+          toggleBtn.style.display = 'none';
+          populateEditor();
+        } else {
+          loginModalPanel.style.display = 'block';
+          toggleBtn.style.display = 'none';
+          inputLoginPass.focus();
+        }
+      };
+
+      btnCancelLogin.onclick = () => {
+        loginModalPanel.style.display = 'none';
+        toggleBtn.style.display = 'inline-block';
+        loginErrorMsg.style.display = 'none';
+        inputLoginPass.value = '';
+      };
+
+      btnSubmitLogin.onclick = handleLogin;
+      inputLoginPass.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleLogin();
+      });
+
+      function handleLogin() {
+        const entered = inputLoginPass.value.trim();
+        if (entered === appData.adminPassword) {
+          isAuthenticated = true;
+          loginModalPanel.style.display = 'none';
+          loginErrorMsg.style.display = 'none';
+          inputLoginPass.value = '';
+          protectedEditorContainer.style.display = 'block';
+          populateEditor();
+          renderApp();
+        } else {
+          loginErrorMsg.style.display = 'block';
+        }
+      }
+
+      btnLogoutAdmin.onclick = () => {
+        isAuthenticated = false;
+        protectedEditorContainer.style.display = 'none';
+        toggleBtn.style.display = 'inline-block';
+        renderApp();
+      };
+
+      function populateEditor() {
+        const soon = appData.soonData;
+        inputStampIcon.value = soon.stampIcon || "📌";
+        inputStampYear.value = soon.stampYear || "Next Up";
+        inputStampDesc.value = soon.stampDesc || "Coming Soon";
+        inputAccentColor.value = soon.accentColor || "#B98D6F";
+        inputTitle.value = soon.title;
+        inputSubtitle.value = soon.subtitle;
+
+        editorCardsList.innerHTML = '';
+        soon.cards.forEach(card => addCardFieldGroup(card));
+
+        editorTimelineList.innerHTML = '';
+        soon.timeline.forEach(item => addTimelineFieldGroup(item));
+      }
+
+      function addCardFieldGroup(card = { title: '', subtext: '', btnText: '', btnLink: '' }) {
+        const box = document.createElement('div');
+        box.className = 'editor-item-box card-item';
+        box.innerHTML = `
+          <button type="button" class="btn-delete" onclick="this.parentElement.remove()">Remove</button>
+          <div class="form-group" style="margin-top: 10px;">
+            <label>Card Title</label>
+            <input type="text" class="form-input card-title" value="${card.title}" placeholder="e.g. Memory Photos">
+          </div>
+          <div class="form-group">
+            <label>Subtext (optional)</label>
+            <input type="text" class="form-input card-subtext" value="${card.subtext}" placeholder="e.g. Relive the happy moments">
+          </div>
+          <div class="form-group">
+            <label>Button Label (optional)</label>
+            <input type="text" class="form-input card-btn-text" value="${card.btnText}" placeholder="e.g. View Album">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Link URL (optional)</label>
+            <input type="url" class="form-input card-btn-link" value="${card.btnLink}" placeholder="https://photos.app.goo.gl/...">
+          </div>
+        `;
+        editorCardsList.appendChild(box);
+      }
+
+      function addTimelineFieldGroup(item = { name: '', link: '' }) {
+        const box = document.createElement('div');
+        box.className = 'editor-item-box timeline-item';
+        box.innerHTML = `
+          <button type="button" class="btn-delete" onclick="this.parentElement.remove()">Remove</button>
+          <div class="form-group" style="margin-top: 10px;">
+            <label>Album Name & Emoji</label>
+            <input type="text" class="form-input timeline-name" value="${item.name}" placeholder="e.g. Cake Cutting 🎂">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Google Photos Album Link</label>
+            <input type="url" class="form-input timeline-link" value="${item.link}" placeholder="https://photos.app.goo.gl/...">
+          </div>
+        `;
+        editorTimelineList.appendChild(box);
+      }
+
+      function collectFormData() {
+        const cards = [];
+        document.querySelectorAll('.editor-item-box.card-item').forEach(box => {
+          const title = box.querySelector('.card-title').value.trim();
+          if (title) {
+            cards.push({
+              title: title,
+              subtext: box.querySelector('.card-subtext').value.trim(),
+              btnText: box.querySelector('.card-btn-text').value.trim(),
+              btnLink: box.querySelector('.card-btn-link').value.trim()
+            });
+          }
+        });
+
+        const timeline = [];
+        document.querySelectorAll('.editor-item-box.timeline-item').forEach(box => {
+          const name = box.querySelector('.timeline-name').value.trim();
+          const link = box.querySelector('.timeline-link').value.trim();
+          if (name && link) timeline.push({ name, link });
+        });
+
+        return {
+          stampIcon: inputStampIcon.value.trim() || "📌",
+          stampYear: inputStampYear.value.trim() || "Next Up",
+          stampDesc: inputStampDesc.value.trim() || "Coming Soon",
+          accentColor: inputAccentColor.value,
+          title: inputTitle.value.trim() || "What's Next",
+          subtitle: inputSubtitle.value.trim() || "More pages coming to the scrapbook 📖",
+          cards: cards,
+          timeline: timeline
+        };
+      }
+
+      // Add Field Handlers
+      document.getElementById('btn-add-card-field').onclick = () => addCardFieldGroup();
+      document.getElementById('btn-add-timeline-field').onclick = () => addTimelineFieldGroup();
+
+      document.getElementById('btn-close-editor').onclick = () => {
+        protectedEditorContainer.style.display = 'none';
+        toggleBtn.style.display = 'inline-block';
+      };
+
+      // Save Draft in 'Coming Soon'
+      document.getElementById('btn-save-draft').onclick = () => {
+        appData.soonData = collectFormData();
+        saveStorage();
+        renderApp();
+        switchTab('soon', appData.soonData.accentColor);
+        protectedEditorContainer.style.display = 'none';
+        toggleBtn.style.display = 'inline-block';
+      };
+
+      // Publish as a Brand New Permanent Tab
+      document.getElementById('btn-publish-page').onclick = () => {
+        const formData = collectFormData();
+        const pageId = 'custom-' + Date.now();
+        
+        const newPage = { id: pageId, ...formData };
+        appData.customPages.push(newPage);
+        
+        // Reset the Soon Tab to fresh default state
+        appData.soonData = {
+          stampIcon: "📌",
+          stampYear: "Next Up",
+          stampDesc: "Coming Soon",
+          accentColor: "#B98D6F",
+          title: "What's Next",
+          subtitle: "More pages coming to the scrapbook 📖",
+          cards: [
+            {
+              title: "A new page is waiting 📌",
+              subtext: "Every new celebration gets pinned right here. You can add brand new pages using the editor below!",
+              btnText: "",
+              btnLink: ""
+            }
+          ],
+          timeline: []
+        };
+        
+        saveStorage();
+        renderApp();
+        
+        switchTab(pageId, newPage.accentColor);
+        protectedEditorContainer.style.display = 'none';
+        toggleBtn.style.display = 'inline-block';
+      };
+
+      // Change Password Handler
+      document.getElementById('btn-change-pass').onclick = () => {
+        const newPass = document.getElementById('input-new-pass').value.trim();
+        if (newPass) {
+          appData.adminPassword = newPass;
+          saveStorage();
+          document.getElementById('input-new-pass').value = '';
+          const msg = document.getElementById('pass-change-msg');
+          msg.style.display = 'block';
+          setTimeout(() => { msg.style.display = 'none'; }, 3000);
+        }
+      };
+
+      // Download Updated HTML File Feature
+      btnDownloadHtml.onclick = () => {
+        if (!isAuthenticated) return;
+
+        const docClone = document.documentElement.cloneNode(true);
+
+        const cloneEditor = docClone.querySelector('#protected-editor-container');
+        if (cloneEditor) cloneEditor.style.display = 'none';
+
+        const cloneLogin = docClone.querySelector('#login-modal-panel');
+        if (cloneLogin) cloneLogin.style.display = 'none';
+
+        const cloneToggle = docClone.querySelector('#btn-toggle-editor');
+        if (cloneToggle) cloneToggle.style.display = 'inline-block';
+
+        const scriptElement = docClone.querySelector('#app-state-script');
+        if (scriptElement) {
+          const currentDataJson = JSON.stringify(appData, null, 2);
+          scriptElement.innerHTML = scriptElement.innerHTML.replace(
+            /window\.INITIAL_APP_DATA\s*=\s*\{[\s\S]*?\};/,
+            `window.INITIAL_APP_DATA = ${currentDataJson};`
+          );
+        }
+
+        const fullHtmlContent = "<!DOCTYPE html>\n" + docClone.outerHTML;
+
+        const blob = new Blob([fullHtmlContent], { type: 'text/html' });
+        const downloadUrl = URL.createObjectURL(blob);
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.href = downloadUrl;
+        downloadAnchor.download = 'family_scrapbook_updated.html';
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        document.body.removeChild(downloadAnchor);
+        URL.revokeObjectURL(downloadUrl);
+      };
+
+      // Initializing App
+      renderApp();
+      switchTab('wedding', '#C5A880');
+    });
+  </script>
+</body>
+</html>
